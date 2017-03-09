@@ -21,15 +21,17 @@ class Rumah_pompa extends REST_Controller
     }
 
     function rumahpompa_get(){
-        $id = $this->get('id');
-        $this->load->model('rumahpompa_model');
-        if ($id == ''){
-            $rumah_pompa["result"] = $this->rumahpompa_model->getAll();
-        }
-        else{
-            $rumah_pompa["result"] = $this->rumahpompa_model->getbyId($id);
-        }
 
+        $this->load->model('rumahpompa_model');
+        $rumah_pompa["result"] = $this->rumahpompa_model->getAll();
+
+        $this->response($rumah_pompa, 200);
+    }
+
+    function getrumahpompabyId_post(){
+        $id = $this->post('id');
+        $this->load->model('rumahpompa_model');
+        $rumah_pompa["result"] = $this->rumahpompa_model->getbyId($id);
         $this->response($rumah_pompa, 200);
     }
 }
