@@ -174,7 +174,25 @@ class User extends REST_Controller
     }
 
     function edit_post(){
+        $this->load->model('user_model');
+        date_default_timezone_set('Asia/Jakarta');
+        $date_insert = date('Y-m-d h:i:s', time());
+        $username = $this->post('username');
+        $data = array(
+            'nama_user' => $this->post('name'),
+            'alamat_user' => $this->post('address'),
+            'no_telp_user' => $this->post('phone'),
+            'updated_at' => $date_insert);
 
+        $update = $this->user_model->editUser($username, $data);
+        if($update){
+            $respon["status"]= true;
+            $respon["msg"]= "Edit Berhasil";
+        }else{
+            $respon["status"]= false;
+            $respon["msg"]= "Edit Gagal";
+        }
+        $this->response($respon, 200);
     }
 
 }

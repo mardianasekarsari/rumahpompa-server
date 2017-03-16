@@ -70,7 +70,8 @@ class User_model extends CI_Model
 
     function editUser($username, $data){
         $this->db->where('username', $username);
-        $this->db->update($this->table_name, $data);
+        $update = $this->db->update($this->table_name, $data);
+        return $update ? true : false;
     }
 	// =========================================================================
 }
