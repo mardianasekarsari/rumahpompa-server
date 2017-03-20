@@ -8,8 +8,12 @@
  */
 class Rumahpompa_model extends CI_Model
 {
+    private $table_name = "rumah_pompa";
+    private $nama = "nama_";
+    private $id_rumahpompa = "id_rumah_pompa";
+
     function getbyName($name){
-        $this->db->where('nama_', $name);
+        $this->db->where($this->nama, $name);
         $query = $this->db->get('rumah_pompa');
         return $query->row();
     }
@@ -18,8 +22,14 @@ class Rumahpompa_model extends CI_Model
 
     }
 
+    function edit($id, $data){
+        $this->db->where($this->id_rumahpompa, $id);
+        $update = $this->db->update($this->table_name, $data);
+        return $update ? true : false;
+    }
+
     function getAll(){
-        return $this->db->get('rumah_pompa')->result();
+        return $this->db->get($this->table_name)->result();
     }
 
     function getbyUser($user){
@@ -31,8 +41,8 @@ class Rumahpompa_model extends CI_Model
     }
 
     function getbyId($id){
-        $this->db->where('id_rumah_pompa', $id);
-        $query = $this->db->get('rumah_pompa');
+        $this->db->where($this->id_rumahpompa, $id);
+        $query = $this->db->get($this->table_name);
         return $query->row();
     }
 }
