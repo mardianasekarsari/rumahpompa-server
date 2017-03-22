@@ -57,4 +57,5 @@ class Rumah_pompa extends REST_Controller
         }
         $this->response($respon, 200);
     }
+
 }

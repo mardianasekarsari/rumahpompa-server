@@ -11,6 +11,8 @@ class Rumahpompa_model extends CI_Model
     private $table_name = "rumah_pompa";
     private $nama = "nama_";
     private $id_rumahpompa = "id_rumah_pompa";
+    private $latitude = "latitude";
+    private $longitude = "longitude";
 
     function getbyName($name){
         $this->db->where($this->nama, $name);
@@ -44,5 +46,13 @@ class Rumahpompa_model extends CI_Model
         $this->db->where($this->id_rumahpompa, $id);
         $query = $this->db->get($this->table_name);
         return $query->row();
+    }
+
+    function getbyLocation($lat, $long){
+        $this->db->where($this->latitude, $lat);
+        $this->db->where($this->longitude, $long);
+        $query = $this->db->get($this->table_name);
+        return $query->row();
+
     }
 }
