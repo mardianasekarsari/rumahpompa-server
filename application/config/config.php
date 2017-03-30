@@ -1,6 +1,8 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
+// Firebase API Key
+define('FIREBASE_API_KEY', 'AAAAmi6yKk0:APA91bG9B0kHPcaeWZzpCcY7W9noRrxZ0jvqTHzXv0ALsIrZ4LHzwOkDDLOqH4QB0l5-0c-JUDat24y7k_8gSmSoepum-q6XaXnK1PEZpQy-J0wravpdmQPV-wQmrlNN-3FkQz8yDFAX');
 /*
 |--------------------------------------------------------------------------
 | Base Site URL
@@ -523,3 +525,5 @@ $config['rewrite_short_tags'] = FALSE;
 | Array:		array('10.0.1.200', '192.168.5.0/24')
 */
 $config['proxy_ips'] = '';
+
+$config['firebase_api_key'] = 'AAAAmi6yKk0:APA91bG9B0kHPcaeWZzpCcY7W9noRrxZ0jvqTHzXv0ALsIrZ4LHzwOkDDLOqH4QB0l5-0c-JUDat24y7k_8gSmSoepum-q6XaXnK1PEZpQy-J0wravpdmQPV-wQmrlNN-3FkQz8yDFAX';

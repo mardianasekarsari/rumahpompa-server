@@ -195,5 +195,46 @@ class User extends REST_Controller
         $this->response($respon, 200);
     }
 
+    function editToken_post(){
+        $this->load->model('user_model');
+        date_default_timezone_set('Asia/Jakarta');
+        $date_update = date('Y-m-d h:i:s', time());
+
+        $username = $this->post('username');
+        $token = $this->post('token');
+        $data = array(
+            'token' => $token,
+            'updated_at' => $date_update);
+        $update = $this->user_model->editUser($username, $data);
+        if($update){
+            $respon["status"]= true;
+            $respon["msg"]= "Edit Berhasil";
+        }else{
+            $respon["status"]= false;
+            $respon["msg"]= "Edit Gagal";
+        }
+        $this->response($respon, 200);
+    }
+
+    function deleteToken_post(){
+        $this->load->model('user_model');
+        date_default_timezone_set('Asia/Jakarta');
+        $date_update = date('Y-m-d h:i:s', time());
+
+        $username = $this->post('username');
+        $data = array(
+            'token' => NULL,
+            'updated_at' => $date_update);
+        $update = $this->user_model->editUser($username, $data);
+        if($update){
+            $respon["status"]= true;
+            $respon["msg"]= "Edit Berhasil";
+        }else{
+            $respon["status"]= false;
+            $respon["msg"]= "Edit Gagal";
+        }
+        $this->response($respon, 200);
+    }
+
 }
 	

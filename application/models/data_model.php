@@ -39,4 +39,12 @@ class Data_model extends CI_Model
         $query = $this->db->get($this->table_name);
         return $query->row();
     }
+
+    function getlastdata($id){
+        $this->db->where($this->idrumahpompa, $id);
+        $this->db->order_by('waktu', 'desc');
+        $this->db->limit(1);
+        $query = $this->db->get($this->table_name);
+        return $query->row();
+    }
 }
