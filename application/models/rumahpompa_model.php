@@ -31,7 +31,9 @@ class Rumahpompa_model extends CI_Model
     }
 
     function getAll(){
-        return $this->db->get($this->table_name)->result();
+        $this->db->order_by('id_rumah_pompa', 'asc');
+        $query = $this->db->get($this->table_name);
+        return $query->result();
     }
 
     function getbyUser($user){

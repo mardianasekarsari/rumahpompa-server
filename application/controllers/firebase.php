@@ -41,12 +41,11 @@ class Firebase
 
         require_once __DIR__ . '/../config/config.php';
 
-        //print_r(FIREBASE_API_KEY) ;
         // Set POST variables
         $url = 'https://fcm.googleapis.com/fcm/send';
 
         $headers = array(
-            'Authorization: key=' . FIREBASE_API_KEY,
+            'Authorization: key= AAAAmi6yKk0:APA91bG9B0kHPcaeWZzpCcY7W9noRrxZ0jvqTHzXv0ALsIrZ4LHzwOkDDLOqH4QB0l5-0c-JUDat24y7k_8gSmSoepum-q6XaXnK1PEZpQy-J0wravpdmQPV-wQmrlNN-3FkQz8yDFAX',
             'Content-Type: application/json'
         );
         // Open connection
@@ -73,6 +72,7 @@ class Firebase
         // Close connection
         curl_close($ch);
 
+        //print $result;
         return $result;
     }
 }

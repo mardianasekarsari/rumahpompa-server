@@ -212,6 +212,23 @@ class data extends REST_Controller
         $this->response($data, 200);
     }
 
+    function getalllastdata_get(){
+        $this->load->model('data_model');
+        $this->load->model('rumahpompa_model');
+        $data = array();
+
+        $rumah_pompa = $this->rumahpompa_model->getAll();
+        foreach ($rumah_pompa as $row) {
+            if ($this->data_model->getlastdata($row->id_rumah_pompa) != null) {
+                $data[] = $this->data_model->getlastdata($row->id_rumah_pompa);
+            }
+            else
+                $data[] = json_decode('{}');;
+            
+        }
+        $this->response($data, 200);
+    }
+
     function alert_post(){
         // cek sensor, if
         $this->load->model('data_model');
@@ -248,7 +265,7 @@ class data extends REST_Controller
         }
         elseif ($tinggi_air >= $rumahpompa->threshold_tinggi_air){
             $respon["status"] = "true";
-            //$this->notification($arrayUser);
+            $this->notification($arrayUser);
         }
         else{
             $respon["status"] = "false";
@@ -256,6 +273,7 @@ class data extends REST_Controller
         $this->response($respon, 200);
 
     }
+
 
     function notification($users){
         $this->load->model('user_model');
@@ -281,31 +299,31 @@ class data extends REST_Controller
         $push_type = 'multiple';
 
         // whether to include to image or not
-        $include_image = isset($_GET['include_image']) ? TRUE : FALSE;
+        $include_image = FALSE;
 
         $push->setTitle($title);
         $push->setMessage($message);
-        /*if ($include_image) {
-            $push->setImage('http://api.androidhive.info/images/minion.jpg');
+        if ($include_image) {
+            $push->setImage('');
         } else {
             $push->setImage('');
-        }*/
+        }
         $push->setIsBackground(FALSE);
         $push->setPayload($payload);
 
         $json = '';
         $response = '';
 
+        $token = $users[0];
+        //print $regId;
         if ($push_type == 'multiple') {
             $json = $push->getPush();
             $response = $firebase->sendMultiple($users, $json);
-            //print $response;
-            //$respon["msg"] = "Masuk";
-        } /*else if ($push_type == 'individual') {
+        } else if ($push_type == 'individual') {
             $json = $push->getPush();
             $regId = $token;
             $response = $firebase->send($regId, $json);
-        }*/
+        }
     }
 
     function location_get(){
