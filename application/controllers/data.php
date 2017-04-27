@@ -260,22 +260,43 @@ class data extends REST_Controller
         $respon["chanceofrain"] = $pop;
 
         if ($pop>=30){
+            $status = true;
             $respon["status"] = "true";
-            $this->notification($arrayUser);
+            $this->notification($arrayUser, $tinggi_air, $pop);
         }
         elseif ($tinggi_air >= $rumahpompa->threshold_tinggi_air){
+            $status = true;
             $respon["status"] = "true";
-            $this->notification($arrayUser);
+            $this->notification($arrayUser, $tinggi_air, $pop);
         }
         else{
+            $status = false;
             $respon["status"] = "false";
         }
-        $this->response($respon, 200);
+
+        //Update status alert in table rumahpompa
+        $updateStatus = $this->editStatus($idrumahpompa, $status);
+        if ($updateStatus) {
+            $this->response($respon, 200);    
+        }
 
     }
 
+    function editStatus($idrumahpompa, $status){
+        $this->load->model('rumahpompa_model');
+        date_default_timezone_set('Asia/Jakarta');
+        $date_update = date('Y-m-d h:i:s', time());
 
-    function notification($users){
+        $data = array(
+            'alert' => $status,
+            'updated_at' => $date_update);
+
+        $update = $this->rumahpompa_model->edit($idrumahpompa, $data);
+        return $update ? true : false;
+
+    }
+
+    function notification($users, $tinggiair, $pop){
         $this->load->model('user_model');
 
         require_once __DIR__ . '/firebase.php';
@@ -290,10 +311,10 @@ class data extends REST_Controller
         $payload['score'] = '5.6';
 
         // notification title
-        $title = 'Rumah Pompa Notification';
+        $title = 'Rumah Pompa';
 
         // notification message
-        $message = 'Terjadi potensi banjir, nyalakan pompa!';
+        $message = 'Kemungkinan Terjadi Hujan : ' . $pop . '%.' . '  Ketinggian air : ' . $tinggiair . 'cm.';
 
         // push type - single user / topic
         $push_type = 'multiple';

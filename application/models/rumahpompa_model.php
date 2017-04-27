@@ -13,6 +13,7 @@ class Rumahpompa_model extends CI_Model
     private $id_rumahpompa = "id_rumah_pompa";
     private $latitude = "latitude";
     private $longitude = "longitude";
+    private $alert = "alert";
 
     function getbyName($name){
         $this->db->where($this->nama, $name);
@@ -20,8 +21,15 @@ class Rumahpompa_model extends CI_Model
         return $query->row();
     }
 
-    function store($data){
+    function generateid(){
+        $query = "SELECT nextval('id_rumahpompa_seq')";
+        $id_data = $this->db->query($query);
+        return $id_data->row()->nextval;
+    }
 
+    function store($data){
+        $query = $this->db->insert($this->table_name, $data);
+        return $query ? true : false;
     }
 
     function edit($id, $data){
@@ -31,17 +39,10 @@ class Rumahpompa_model extends CI_Model
     }
 
     function getAll(){
+        $this->db->where('soft_delete', false);
         $this->db->order_by('id_rumah_pompa', 'asc');
         $query = $this->db->get($this->table_name);
         return $query->result();
-    }
-
-    function getbyUser($user){
-        $this->db->where('username', $user);
-        $this->db->where('isactive', 'TRUE');
-        $query = $this->db->get('user_rumahpompa');
-        return $query->row();
-        //return $this->db->last_query();
     }
 
     function getbyId($id){
@@ -57,4 +58,18 @@ class Rumahpompa_model extends CI_Model
         return $query->row();
 
     }
+
+    function getbyStatus($status){
+        $this->db->where('soft_delete', false);
+        if ($status=="Berpotensi Banjir") {
+            $this->db->where($this->alert, TRUE);
+        }
+        else{
+             $this->db->where($this->alert, FALSE);
+        }
+        $query = $this->db->get($this->table_name);
+        return $query->result();
+    }
+
+    
 }

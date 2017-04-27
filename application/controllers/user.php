@@ -23,6 +23,11 @@ class User extends REST_Controller
 	function __construct()
 	{
 		parent::__construct();
+        $this->load->model('user_model');
+        $this->load->model('roleuser_model');
+         $this->load->model('user_rumahpompa_model');
+         $this->load->model('role_model');
+        $this->load->model('rumahpompa_model');
 		/*$this->data = array("rc" => 'UR', "desc" => "Response belum didefinisikan");
 
 		return $this->response($this->data, 200);*/
@@ -31,14 +36,8 @@ class User extends REST_Controller
 	}
 
 	function user_get(){
-		$this->load->model('user_model');
-		$petugas = $this->user_model->getAllUser();
-		//$petugas = $this->db->get('role')->result();
-		$this->response($petugas, 200);
-		
-		/*$respon["responCode"] = "01";
-		$respon["responData"] = "Nomor Referensi Tidak Ditemukan";
-		$this->response($respon, 200);*/
+		$user["result"] = $this->user_model->getAllUser();
+		$this->response($user, 200);
 
 	}
 
@@ -61,8 +60,13 @@ class User extends REST_Controller
 
 	}
 
+    function getbyUsername_post(){
+        $username = $this->post('username');
+        $user["result"] = $this->user_model->getbyUsername($username);
+        $this->response($user, 200);
+    }
+
 	function login_post(){
-		$this->load->model('user_model');
         $this->load->model('rumahpompa_model');
 
 		$data = array(
@@ -88,7 +92,8 @@ class User extends REST_Controller
                 //$this->response($respon, 200);
             }
             else{
-                $user_rumahpompa = $this->rumahpompa_model->getbyUser($username);
+                //$user_rumahpompa = $this->rumahpompa_model->getbyUser($username);
+                $user_rumahpompa = $this->user_rumahpompa_model->getbyUsername($username);
 
 
                 $respon["status"]= true;
@@ -108,9 +113,6 @@ class User extends REST_Controller
 
 	function store_post(){
         //var_dump($this->input->post());
-        $this->load->model('user_model');
-        $this->load->model('role_model');
-        $this->load->model('rumahpompa_model');
 
         date_default_timezone_set('Asia/Jakarta');
         $date_insert = date('Y-m-d h:i:s', time());
@@ -174,7 +176,79 @@ class User extends REST_Controller
     }
 
     function edit_post(){
-        $this->load->model('user_model');
+
+        date_default_timezone_set('Asia/Jakarta');
+        $date_insert = date('Y-m-d h:i:s', time());
+
+       $data_user = array(
+            'username' => $this->post('username'),
+            'nama_user' => $this->post('name'),
+            'alamat_user' => $this->post('address'),
+            'no_telp_user' => $this->post('phone'),
+            'updated_at' => $date_insert,);
+
+        $data_role = array(
+            'username' => $this->post('username'),
+            'id_role' => (int)$this->role_model->getbyName($this->post('role'))->id_role,
+            'isactive' => 'TRUE',
+            'created_at' => $date_insert,
+            'updated_at' => $date_insert,
+            'soft_delete' => 'false'
+        );
+
+        $data_user_rumahpompa = array(
+            'id_rumah_pompa' => $this->rumahpompa_model->getbyName($this->post('rumah_pompa'))->id_rumah_pompa,
+            'username' => $this->post('username'),
+            'isactive' => 'TRUE',
+            'created_at' => $date_insert,
+            'updated_at' => $date_insert,
+            'soft_delete' => 'false'
+        );
+
+        $query = $this->user_model->edit($data_user, $data_role, $data_user_rumahpompa);
+        if($query){
+            $respon["status"]= true;
+            $respon["msg"]= "Edit Berhasil";
+        }else{
+            $respon["status"]= false;
+            $respon["msg"]= "Edit Gagal";
+        }
+        $this->response($respon, 200);
+    }
+
+    function changePassword_post(){
+        //var_dump($this->input->post());
+
+        date_default_timezone_set('Asia/Jakarta');
+        $date_insert = date('Y-m-d h:i:s', time());
+        $username = $this->post('username');
+        $oldpassword = $this->post('oldpassword');
+        $newpassword = $this->post('newpassword');
+        $data = array(
+            'password' => md5($this->post('newpassword')),
+            'updated_at' => $date_insert);
+
+        $userpassword = $this->user_model->getbyUsername($username)->password;
+        if ($userpassword==md5($oldpassword)) {
+            $query = $this->user_model->editUser($username, $data);
+            if($query){
+                $respon["status"]= true;
+                $respon["msg"]= "Edit Berhasil";
+            }else{
+                $respon["status"]= false;
+                $respon["kode"]= 1;
+                $respon["msg"]= "Edit Gagal";
+            }
+        }
+        else{
+            $respon["status"]= false;
+            $respon["kode"]= 2;
+            $respon["msg"]= "Edit Gagal";
+        }
+        $this->response($respon, 200);
+    }
+
+    function editProfil_post(){
         date_default_timezone_set('Asia/Jakarta');
         $date_insert = date('Y-m-d h:i:s', time());
         $username = $this->post('username');
@@ -196,7 +270,6 @@ class User extends REST_Controller
     }
 
     function editToken_post(){
-        $this->load->model('user_model');
         date_default_timezone_set('Asia/Jakarta');
         $date_update = date('Y-m-d h:i:s', time());
 
@@ -217,7 +290,6 @@ class User extends REST_Controller
     }
 
     function deleteToken_post(){
-        $this->load->model('user_model');
         date_default_timezone_set('Asia/Jakarta');
         $date_update = date('Y-m-d h:i:s', time());
 
@@ -234,6 +306,43 @@ class User extends REST_Controller
             $respon["msg"]= "Edit Gagal";
         }
         $this->response($respon, 200);
+    }
+
+    function delete_post(){
+        date_default_timezone_set('Asia/Jakarta');
+        $date_update = date('Y-m-d h:i:s', time());
+        $username = $this->post('username');
+
+        //Menghapus Table rumahpompauser
+        $data_userrumahpompa = array(
+            'isactive' => FALSE,
+            'soft_delete' => TRUE,
+            'updated_at' => $date_update);
+        $update1 = $this->user_rumahpompa_model->edit($username, $data_userrumahpompa);
+
+        //Menghapus Table Roleuser, isactive false
+        $data_roleuser = array(
+            'isactive' => FALSE,
+            'soft_delete' => TRUE,
+            'updated_at' => $date_update);
+        $update2 = $this->roleuser_model->edit($username, $data_roleuser );
+
+        //Menghapus di table user_
+        $data_user = array(
+            'soft_delete' => TRUE,
+            'updated_at' => $date_update);
+        $update3 = $this->user_model->editUser($username, $data_user );
+
+        if ($update1 && $update2 && $update3) {
+            $respon["status"]= true;
+            $respon["msg"]= "Delete Berhasil";
+        }
+        else{
+            $respon["status"]= false;
+            $respon["msg"]= "Delete Gagal";
+        }
+        $this->response($respon, 200);
+        
     }
 
 }

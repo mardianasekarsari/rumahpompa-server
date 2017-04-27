@@ -18,6 +18,10 @@ class User_model extends CI_Model
 	function __construct()
   	{
     	parent::__construct(); // construct the Model class
+
+        $this->load->model('roleuser_model');
+        $this->load->model('user_rumahpompa_model');
+        $this->load->model('rumahpompa_model');
   	}
 
   	function check_existing_user($username){
@@ -40,20 +44,69 @@ class User_model extends CI_Model
 	}
 
     function store($data_user, $data_role, $data_user_rumahpompa){
-        $this->load->model('roleuser_model');
-        $this->load->model('user_rumahpompa_model');
         $query = $this->db->insert($this->table_name, $data_user);
         $query2 = $this->roleuser_model->store($data_role);
         $query3 = $this->user_rumahpompa_model->store($data_user_rumahpompa);
         return $query && $query2 && $query3 ? true : false;
     }
 
+    function edit($data_user, $data_role, $data_user_rumahpompa){
+        $query_userrumahpompa = true;
+        $query_userrole = true;
+
+        $oldUsername = $data_user["username"];
+        $user = $this->getbyUsername($oldUsername);
+        $user_rumahpompa = $this->user_rumahpompa_model->getbyUsername($oldUsername)->id_rumah_pompa;
+        $user_role = $this->roleuser_model->getbyUsername($oldUsername)->id_role;
+
+        $isactive = array(
+            'isactive' => FALSE,
+            'updated_at' => $data_user["updated_at"]
+        );
+
+        $this->db->where('username', $oldUsername);
+        $insert_user = $this->db->update($this->table_name, $data_user);
+
+        if ($user_rumahpompa != $data_user_rumahpompa["id_rumah_pompa"]) {
+            $update_userrumahpompa = $this->user_rumahpompa_model->edit($oldUsername, $isactive);
+            $insert_userrumahpompa = $this->user_rumahpompa_model->store($data_user_rumahpompa);
+            if ($update_userrumahpompa && $insert_userrumahpompa) {
+                $query_userrumahpompa = true;
+            }
+            else{
+                $query_userrumahpompa = false;
+            }
+        }
+        if ($user_role != $data_role["id_role"]){
+            $update_roleuser = $this->roleuser_model->edit($oldUsername, $isactive);
+            $insert_roleuser = $this->roleuser_model->store($data_role);
+
+            if ($update_roleuser && $insert_roleuser) {
+                $query_userrole = true;
+            }
+            else{
+                $query_userrole = false;
+            }
+        }
+        //print_r($query_userrole);
+
+        if($insert_user && $query_userrole && $query_userrumahpompa){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+
     function getAllUser(){
-        return $this->db->get('role')->result();
+        $this->db->where('soft_delete', FALSE);
+        $this->db->order_by('nama_user', 'asc');
+        return $this->db->get('user_')->result();
     }
 
 	function getbyUsername($username){
 		$this->db->where($this->username, $username);
+        $this->db->where('soft_delete', FALSE);
         $query = $this->db->get($this->table_name);
 		return $query->row();
 	}

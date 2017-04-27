@@ -13,10 +13,12 @@ class Role extends REST_Controller
     function __construct()
     {
         parent::__construct();
+        $this->load->model('role_model');
+        $this->load->model('roleuser_model');
     }
 
     function role_get(){
-        $this->load->model('role_model');
+        
         $role["result"] = $this->role_model->getAll();
         //$petugas = $this->db->get('role')->result();
         $this->response($role, 200);
@@ -24,5 +26,13 @@ class Role extends REST_Controller
         /*$respon["responCode"] = "01";
         $respon["responData"] = "Nomor Referensi Tidak Ditemukan";
         $this->response($respon, 200);*/
+    }
+
+    function getByUsername_post(){  
+        $username = $this->post('username');
+        $idrole = $this->roleuser_model->getbyUsername($username)->id_role;
+
+        $role["nama_role"] = ucwords(strtolower($this->role_model->getbyId($idrole)->nama_role));
+        $this->response($role, 200);
     }
 }
