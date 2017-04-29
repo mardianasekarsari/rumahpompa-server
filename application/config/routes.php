@@ -52,3 +52,15 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 $route['default_controller'] = 'welcome';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
+
+$route['user']['GET'] = 'user/user';
+$route['user/(:any)']['GET'] = 'user/getbyUsername';
+$route['user']['POST'] = 'user/user';
+$route['user']['PUT'] = 'user/user';
+$route['user/(:any)']['DELETE'] = 'user/user';
+$route['user/(:any)/token']['DELETE'] = 'user/deleteToken';
+$route['user/(:any)/token']['PUT'] = 'user/editToken';
+$route['user/(:any)/password']['PUT'] = 'user/changePassword';
+
+$route['rumah-pompa']['GET'] = 'rumah_pompa/rumahpompa';
+
