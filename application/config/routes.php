@@ -63,4 +63,8 @@ $route['user/(:any)/token']['PUT'] = 'user/editToken';
 $route['user/(:any)/password']['PUT'] = 'user/changePassword';
 
 $route['rumah-pompa']['GET'] = 'rumah_pompa/rumahpompa';
+$route['rumah-pompa/(:any)']['GET'] = 'user/getrumahpompabyId';
+$route['rumah-pompa']['POST'] = 'rumah_pompa/rumahpompa';
+$route['rumah-pompa']['PUT'] = 'rumah_pompa/rumahpompa';
+$route['rumah-pompa/(:any)']['DELETE'] = 'rumah_pompa/rumahpompa';
 

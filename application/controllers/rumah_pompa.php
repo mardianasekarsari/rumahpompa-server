@@ -28,38 +28,13 @@ class Rumah_pompa extends REST_Controller
         $this->response($rumah_pompa, 200);
     }
 
-    function getrumahpompabyId_post(){
-        $id = $this->post('id');
+    function getrumahpompabyId_get(){
+        $id = $this->uri->segment(2);
         $rumah_pompa["result"] = $this->rumahpompa_model->getbyId($id);
         $this->response($rumah_pompa, 200);
     }
 
-    function edit_post(){
-        date_default_timezone_set('Asia/Jakarta');
-        $date_update = date('Y-m-d h:i:s', time());
-        $id = $this->post('id');
-        $data = array(
-            'nama_' => $this->post('name'),
-            'jalan' => $this->post('address'),
-            'no_telp_rumah_pompa' => $this->post('phone'),
-            'threshold_tinggi_air' => (int)$this->post('threshold'),
-            'latitude' => (double)$this->post('latitude'),
-            'longitude' => (double)$this->post('longitude'),
-            'ketinggian_sungai' => (double)$this->post('depthofinlet'),
-            'updated_at' => $date_update);
-
-        $update = $this->rumahpompa_model->edit($id, $data);
-        if($update){
-            $respon["status"]= true;
-            $respon["msg"]= "Edit Berhasil";
-        }else{
-            $respon["status"]= false;
-            $respon["msg"]= "Edit Gagal";
-        }
-        $this->response($respon, 200);
-    }
-
-    function store_post(){
+    function rumahpompa_post(){
         date_default_timezone_set('Asia/Jakarta');
         $date_update = date('Y-m-d h:i:s', time());
         $id = $this->post('id');
@@ -89,7 +64,107 @@ class Rumah_pompa extends REST_Controller
         $this->response($respon, 200);
     }
 
-    function delete_post(){
+    function rumahpompa_put(){
+        date_default_timezone_set('Asia/Jakarta');
+        $date_update = date('Y-m-d h:i:s', time());
+        $id = $this->put('id');
+        $data = array(
+            'nama_' => $this->put('name'),
+            'jalan' => $this->put('address'),
+            'no_telp_rumah_pompa' => $this->put('phone'),
+            'threshold_tinggi_air' => (int)$this->put('threshold'),
+            'latitude' => (double)$this->put('latitude'),
+            'longitude' => (double)$this->put('longitude'),
+            'ketinggian_sungai' => (double)$this->put('depthofinlet'),
+            'updated_at' => $date_update);
+
+        $update = $this->rumahpompa_model->edit($id, $data);
+        if($update){
+            $respon["status"]= true;
+            $respon["msg"]= "Edit Berhasil";
+        }else{
+            $respon["status"]= false;
+            $respon["msg"]= "Edit Gagal";
+        }
+        $this->response($respon, 200);
+    }
+
+    function rumahpompa_delete(){
+        date_default_timezone_set('Asia/Jakarta');
+        $date_update = date('Y-m-d h:i:s', time());
+        $id = $this->uri->segment(2);
+
+        $data = array(
+            'soft_delete' => true,
+            'updated_at' => $date_update);
+        $update = $this->rumahpompa_model->edit($id, $data);
+        if($update){
+            $respon["status"]= true;
+            $respon["msg"]= "Delete Berhasil";
+        }else{
+            $respon["status"]= false;
+            $respon["msg"]= "Delete Gagal";
+        }
+        $this->response($respon, 200);
+        
+    }
+
+    /*function edit_post(){
+        date_default_timezone_set('Asia/Jakarta');
+        $date_update = date('Y-m-d h:i:s', time());
+        $id = $this->post('id');
+        $data = array(
+            'nama_' => $this->post('name'),
+            'jalan' => $this->post('address'),
+            'no_telp_rumah_pompa' => $this->post('phone'),
+            'threshold_tinggi_air' => (int)$this->post('threshold'),
+            'latitude' => (double)$this->post('latitude'),
+            'longitude' => (double)$this->post('longitude'),
+            'ketinggian_sungai' => (double)$this->post('depthofinlet'),
+            'updated_at' => $date_update);
+
+        $update = $this->rumahpompa_model->edit($id, $data);
+        if($update){
+            $respon["status"]= true;
+            $respon["msg"]= "Edit Berhasil";
+        }else{
+            $respon["status"]= false;
+            $respon["msg"]= "Edit Gagal";
+        }
+        $this->response($respon, 200);
+    }*/
+
+    /*function store_post(){
+        date_default_timezone_set('Asia/Jakarta');
+        $date_update = date('Y-m-d h:i:s', time());
+        $id = $this->post('id');
+        $data = array(
+            'id_rumah_pompa' => $this->rumahpompa_model->generateid(),
+            'nama_' => $this->post('name'),
+            'jalan' => $this->post('address'),
+            'no_telp_rumah_pompa' => $this->post('phone'),
+            'threshold_tinggi_air' => (int)$this->post('threshold'),
+            'latitude' => (double)$this->post('latitude'),
+            'longitude' => (double)$this->post('longitude'),
+            'created_at' => $date_update,
+            'updated_at' => $date_update,
+            'soft_delete' => false,
+            'ketinggian_sungai' => (int)$this->post('depthofriver'),
+            'alert' => false);
+
+        $update = $this->rumahpompa_model->store($data);
+        if($update){
+            $respon["status"]= true;
+            $respon["msg"]= "Store Berhasil";
+        }else{
+            $respon["status"]= false;
+            $respon["msg"]= "Store Gagal";
+        }
+        $respon["status"]=true;
+        $this->response($respon, 200);
+    }*/
+
+    /*function delete_post(){
         date_default_timezone_set('Asia/Jakarta');
         $date_update = date('Y-m-d h:i:s', time());
         $id = $this->post('id');
@@ -107,7 +182,7 @@ class Rumah_pompa extends REST_Controller
         }
         $this->response($respon, 200);
         
-    }
+    }*/
 
     function getrumahpompabyName_post(){
         $name = $this->post('rumah_pompa');
