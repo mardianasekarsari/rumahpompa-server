@@ -11,10 +11,37 @@ require APPPATH.'/libraries/REST_Controller.php';
  */
 class data extends REST_Controller
 {
+    function __construct()
+    {
+
+        parent::__construct();
+        $this->load->model('data_model');
+        $this->load->model('rumahpompa_model');
+        $this->load->helper('url');
+        /*$this->data = array("rc" => 'UR', "desc" => "Response belum didefinisikan");
+
+        return $this->response($this->data, 200);*/
+        /*$this->data = array("rc" => 'UR', "desc" => "Response belum didefinisikan");
+        $this->response($this->data, 200);*/
+    }
+
+    function getbyId_get($idrumahpompa){
+        //$idrumahpompa = $this->post('id');
+        $data["result"] = $this->data_model->getlastdata($idrumahpompa);
+        if ($data["result"]==null) {
+            $result = new stdClass();
+            $object = new stdClass();
+            $object->id_data = null;
+            $result->result = $object;
+            $this->response($result, 200);
+        }
+        else{
+            $this->response($data, 200);
+        }
+        
+    }
 
     function cuaca_post(){
-        $this->load->model('rumahpompa_model');
-        $this->load->model('data_model');
 
         $idrumahpompa = $this->post('id');
         date_default_timezone_set('Asia/Jakarta');
@@ -111,8 +138,6 @@ class data extends REST_Controller
     }
 
     function sensor_post(){
-        $this->load->model('rumahpompa_model');
-        $this->load->model('data_model');
         //$sensor_latitude = $this->post('latitude');
         //$sensor_longitude = $this->post('longitude');
         $idrumahpompa = $this->post('id');
@@ -205,16 +230,15 @@ class data extends REST_Controller
         //echo $data->nama_;
     }
 
-    function getbyId_post(){
+    /*function getbyId_post(){
         $this->load->model('data_model');
         $idrumahpompa = $this->post('id');
         $data["result"] = $this->data_model->getlastdata($idrumahpompa);
         $this->response($data, 200);
-    }
+    }*/
 
     function getalllastdata_get(){
-        $this->load->model('data_model');
-        $this->load->model('rumahpompa_model');
+        $object = new stdClass();
         $data = array();
 
         $rumah_pompa = $this->rumahpompa_model->getAll();
@@ -222,11 +246,17 @@ class data extends REST_Controller
             if ($this->data_model->getlastdata($row->id_rumah_pompa) != null) {
                 $data[] = $this->data_model->getlastdata($row->id_rumah_pompa);
             }
-            else
-                $data[] = json_decode('{}');;
-            
+            else{
+                $obj = new stdClass();
+                $obj->id_rumah_pompa = $row->id_rumah_pompa;
+                $obj->id_data = null;
+                $data[] = $obj;
+            }
+                 
         }
-        $this->response($data, 200);
+        $object->result = $data;
+        //echo json_encode($data);
+        $this->response($object, 200);
     }
 
     function alert_post(){

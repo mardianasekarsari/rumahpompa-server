@@ -527,3 +527,4 @@ $config['rewrite_short_tags'] = FALSE;
 $config['proxy_ips'] = '';
 
 $config['firebase_api_key'] = 'AAAAmi6yKk0:APA91bG9B0kHPcaeWZzpCcY7W9noRrxZ0jvqTHzXv0ALsIrZ4LHzwOkDDLOqH4QB0l5-0c-JUDat24y7k_8gSmSoepum-q6XaXnK1PEZpQy-J0wravpdmQPV-wQmrlNN-3FkQz8yDFAX';
+$config['jwt_key'] = 'rumahpompa-apikey';

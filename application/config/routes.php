@@ -53,7 +53,9 @@ $route['default_controller'] = 'welcome';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
+
 //Route user
+$route['login']['POST'] = 'user/login';
 $route['user']['GET'] = 'user/user';
 $route['user/(:any)']['GET'] = 'user/getbyUsername/$1';
 $route['user']['POST'] = 'user/user';
@@ -76,7 +78,10 @@ $route['rumah-pompa/(:any)']['DELETE'] = 'rumah_pompa/rumah_pompa/$1';
 $route['role']['GET'] = 'role/role';
 $route['role/(:any)']['GET'] = 'role/getByUsername/$1';
 
-
 //Route Data
+$route['data']['GET'] = 'data/getalllastdata';
+$route['data/(:any)']['GET'] = 'data/getbyId/$1';
 
+//Route Apikey
+$route['apikey']['POST'] = 'apikey/apikey';
 

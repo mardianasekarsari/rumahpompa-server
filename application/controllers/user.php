@@ -26,8 +26,8 @@ class User extends REST_Controller
         $this->load->helper('url');
         $this->load->model('user_model');
         $this->load->model('roleuser_model');
-         $this->load->model('user_rumahpompa_model');
-         $this->load->model('role_model');
+        $this->load->model('user_rumahpompa_model');
+        $this->load->model('role_model');
         $this->load->model('rumahpompa_model');
 		/*$this->data = array("rc" => 'UR', "desc" => "Response belum didefinisikan");
 
