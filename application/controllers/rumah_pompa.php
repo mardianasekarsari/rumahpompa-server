@@ -12,9 +12,11 @@ class Rumah_pompa extends REST_Controller
 {
     function __construct()
     {
+
         parent::__construct();
         $this->load->model('rumahpompa_model');
         $this->load->model('user_rumahpompa_model');
+        $this->load->helper('url');
         /*$this->data = array("rc" => 'UR', "desc" => "Response belum didefinisikan");
 
         return $this->response($this->data, 200);*/
@@ -24,13 +26,44 @@ class Rumah_pompa extends REST_Controller
 
     function rumahpompa_get(){
         $rumah_pompa["result"] = $this->rumahpompa_model->getAll();
-
         $this->response($rumah_pompa, 200);
     }
 
-    function getrumahpompabyId_get(){
-        $id = $this->uri->segment(2);
+    function getrumahpompa_get(){
+        $value = $this->uri->segment(2);
+        $key = $this->uri->segment(3);
+        $newvalue = str_replace('%20', ' ', $value);
+        if ($key=="id") {
+             $rumah_pompa["result"] = $this->rumahpompa_model->getbyId($newvalue);
+        }
+        elseif ($key=="name") {
+             $rumah_pompa["result"] = $this->rumahpompa_model->getbyName($newvalue);
+        }
+        elseif ($key=="status") {
+             $rumah_pompa["result"] = $this->rumahpompa_model->getbyStatus($newvalue);
+        }
+        $this->response($rumah_pompa, 200);
+    }
+
+    function getrumahpompabyId_get($id){
+        //$id = $this->uri->segment(2);
         $rumah_pompa["result"] = $this->rumahpompa_model->getbyId($id);
+        $this->response($rumah_pompa, 200);
+    }
+
+    function getrumahpompabyStatus_post(){
+        $status = $this->post('status');
+        //$status = $this->uri->segment(3);
+        $newstatus = str_replace('%20', ' ', $status);
+        $rumah_pompa["result"] = $this->rumahpompa_model->getbyStatus($newstatus);
+        $this->response($rumah_pompa, 200);
+    }
+
+     function getrumahpompabyName_post(){
+        $name = $this->post('name');
+        //$name = $this->uri->segment(3);
+        $newname = str_replace('%20', ' ', $name);
+        $rumah_pompa["result"] = $this->rumahpompa_model->getbyName($newname);
         $this->response($rumah_pompa, 200);
     }
 
@@ -89,10 +122,10 @@ class Rumah_pompa extends REST_Controller
         $this->response($respon, 200);
     }
 
-    function rumahpompa_delete(){
+    function rumahpompa_delete($id){
         date_default_timezone_set('Asia/Jakarta');
         $date_update = date('Y-m-d h:i:s', time());
-        $id = $this->uri->segment(2);
+        //$id = $this->uri->segment(2);
 
         $data = array(
             'soft_delete' => true,
@@ -184,11 +217,7 @@ class Rumah_pompa extends REST_Controller
         
     }*/
 
-    function getrumahpompabyName_post(){
-        $name = $this->post('rumah_pompa');
-        $rumah_pompa["result"] = $this->rumahpompa_model->getbyName($name);
-        $this->response($rumah_pompa, 200);
-    }
+   
 
     function getUserRumahpompa_post(){
         $username = $this->post('username');
@@ -213,10 +242,6 @@ class Rumah_pompa extends REST_Controller
        $this->response($rumah_pompa, 200);
     }
 
-    function getrumahpompabyStatus_post(){
-        $status = $this->post('status');
-        $rumah_pompa["result"] = $this->rumahpompa_model->getbyStatus($status);
-        $this->response($rumah_pompa, 200);
-    }
+    
 
 }

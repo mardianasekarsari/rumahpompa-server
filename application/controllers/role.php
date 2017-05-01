@@ -28,11 +28,19 @@ class Role extends REST_Controller
         $this->response($respon, 200);*/
     }
 
-    function getByUsername_post(){  
+    function getByUsername_get($username){  
+        //$username = $this->post('username');
+        $idrole = $this->roleuser_model->getbyUsername($username)->id_role;
+
+        $role["result"]["nama_role"] = ucwords(strtolower($this->role_model->getbyId($idrole)->nama_role));
+        $this->response($role, 200);
+    }
+
+    /*function getByUsername_post(){  
         $username = $this->post('username');
         $idrole = $this->roleuser_model->getbyUsername($username)->id_role;
 
         $role["nama_role"] = ucwords(strtolower($this->role_model->getbyId($idrole)->nama_role));
         $this->response($role, 200);
-    }
+    }*/
 }

@@ -41,8 +41,8 @@ class User extends REST_Controller
 		$this->response($user, 200);
 	}
 
-    function getbyUsername_get(){
-        $username = $this->uri->segment(2);
+    function getbyUsername_get($username){
+        //$username = $this->uri->segment(2);
         $user["result"] = $this->user_model->getbyUsername($username);
         $this->response($user, 200);
     }
@@ -216,11 +216,11 @@ class User extends REST_Controller
         $this->response($respon, 200);
     }
 
-    function user_delete(){
+    function user_delete($username){
         date_default_timezone_set('Asia/Jakarta');
         $date_update = date('Y-m-d h:i:s', time());
         //$username = $this->delete('username');
-        $username = $this->uri->segment(2);
+        //$username = $this->uri->segment(2);
 
         //Menghapus Table rumahpompauser
         $data_userrumahpompa = array(

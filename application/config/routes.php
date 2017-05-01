@@ -53,18 +53,30 @@ $route['default_controller'] = 'welcome';
 $route['404_override'] = '';
 $route['translate_uri_dashes'] = FALSE;
 
+//Route user
 $route['user']['GET'] = 'user/user';
-$route['user/(:any)']['GET'] = 'user/getbyUsername';
+$route['user/(:any)']['GET'] = 'user/getbyUsername/$1';
 $route['user']['POST'] = 'user/user';
 $route['user']['PUT'] = 'user/user';
-$route['user/(:any)']['DELETE'] = 'user/user';
+$route['user/(:any)']['DELETE'] = 'user/user/$1';
 $route['user/(:any)/token']['DELETE'] = 'user/deleteToken';
 $route['user/(:any)/token']['PUT'] = 'user/editToken';
 $route['user/(:any)/password']['PUT'] = 'user/changePassword';
 
+//Route rumah pompa
 $route['rumah-pompa']['GET'] = 'rumah_pompa/rumahpompa';
-$route['rumah-pompa/(:any)']['GET'] = 'user/getrumahpompabyId';
+$route['rumah-pompa/(:any)']['GET'] = 'rumah_pompa/getrumahpompabyId/$1';
+/*$route['rumah-pompa/(:any)/name']['GET'] = 'rumah_pompa/getrumahpompabyName';
+$route['rumah-pompa/(:any)/status']['GET'] = 'rumah_pompa/getrumahpompabyStatus';*/
 $route['rumah-pompa']['POST'] = 'rumah_pompa/rumahpompa';
 $route['rumah-pompa']['PUT'] = 'rumah_pompa/rumahpompa';
-$route['rumah-pompa/(:any)']['DELETE'] = 'rumah_pompa/rumahpompa';
+$route['rumah-pompa/(:any)']['DELETE'] = 'rumah_pompa/rumah_pompa/$1';
+
+//Route role
+$route['role']['GET'] = 'role/role';
+$route['role/(:any)']['GET'] = 'role/getByUsername/$1';
+
+
+//Route Data
+
 
