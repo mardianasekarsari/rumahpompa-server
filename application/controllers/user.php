@@ -1,21 +1,12 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
-/**
- * User
- *
- * Service untuk kelola data user
- * 	- register
- * 	- login
- * 	- view_profile
- *	- update_profile
- *
- * 
- * <===== LOG =====>
- *
-*/
-
-// This can be removed if you use __autoload() in config.php OR use Modular Extensions
 require APPPATH.'/libraries/REST_Controller.php';
+require APPPATH.'/libraries/JWT.php';
+use \Firebase\JWT\SignatureInvalidException;
+require APPPATH.'/libraries/SignatureInvalidException.php';
+use \Firebase\JWT\JWT;
+
+//require 'apikey.php';
 
 class User extends REST_Controller
 {
@@ -29,6 +20,7 @@ class User extends REST_Controller
         $this->load->model('user_rumahpompa_model');
         $this->load->model('role_model');
         $this->load->model('rumahpompa_model');
+
 		/*$this->data = array("rc" => 'UR', "desc" => "Response belum didefinisikan");
 
 		return $this->response($this->data, 200);*/
@@ -36,9 +28,41 @@ class User extends REST_Controller
 		$this->response($this->data, 200);*/
 	}
 
+    function validateToken($apikey){
+        $algorithm = 'HS512';
+        $secretKey = base64_decode($this->config->item('jwt_key')); 
+
+        $res = array(false, '');
+        // using a try and catch to verify
+        try {
+            $token = JWT::decode($apikey, $secretKey, array($algorithm));
+            $res['0'] = true;
+            $res['1'] = (array) $token;
+        } catch (Exception $e) {
+            $res['0'] = false;
+            $res['1'] = '';
+        }
+    
+        return $res;
+    }
+
 	function user_get(){
-		$user["result"] = $this->user_model->getAllUser();
-		$this->response($user, 200);
+        
+        $headers=array();
+        foreach (getallheaders() as $name => $value) {
+            $headers[$name] = $value;
+        }
+
+        $tokenVal = $this->validateToken($headers["Api-key"]);
+        if ($tokenVal['0']) {
+            $username = $token->data->userName;
+            $user["result"] = $this->user_model->getAllUser();
+            $this->response($user, 200);
+        } else{
+            $invalid = "Token Tidak Valid";
+            $this->response($invalid, 200);
+        } 
+        
 	}
 
     function getbyUsername_get($username){

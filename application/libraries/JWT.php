@@ -21,7 +21,6 @@ use \DateTime;
  */
 class JWT
 {
-
     /**
      * When checking nbf, iat or expiration times,
      * we want to provide some extra leeway time to

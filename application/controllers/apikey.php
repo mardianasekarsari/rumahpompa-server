@@ -3,6 +3,8 @@
 // This can be removed if you use __autoload() in config.php OR use Modular Extensions
 require APPPATH.'/libraries/REST_Controller.php';
 require APPPATH.'/libraries/JWT.php';
+use \Firebase\JWT\SignatureInvalidException;
+require APPPATH.'/libraries/SignatureInvalidException.php';
 use \Firebase\JWT\JWT;
 
 class Apikey extends REST_Controller
@@ -15,9 +17,10 @@ class Apikey extends REST_Controller
 	}
 
 	function apikey_post(){
-		
-		$key = $this->config->item('jwt_key');
 		$server = "http://rumahpompa-server.com";
+		$secret_key = $this->config->item('jwt_key');
+		$algorithm = 'HS512';
+		$key = base64_decode($secret_key);
 
 		/*$keypost = $this->post('key');
 		$server = $this->post('domain');*/
@@ -38,7 +41,7 @@ class Apikey extends REST_Controller
 		        ]
 			);
 			$output['result']['status'] = 'valid';
-			$output['result']['token'] = JWT::encode($token, $key);
+			$output['result']['token'] = JWT::encode($token, $key, $algorithm);
 		}
 		else{
 			$output['result']['status'] = 'invalid';
@@ -46,6 +49,22 @@ class Apikey extends REST_Controller
 
 		$this->response($output, 200);
 
+	}
+
+	function validateToken($apikey){
+		$algorithm = 'HS512';
+		$secretKey = base64_decode($this->config->item('jwt_key')); 
+		$res = array(false, '');
+	    // using a try and catch to verify
+	    try {
+	    	$token = JWT::decode($apikey, $secretKey, array($algorithm));
+	    } catch (Exception $e) {
+	      return $res;
+	    }
+	    $res['0'] = true;
+	    $res['1'] = (array) $token;
+	 
+	    return $res;
 	}
 
 }
