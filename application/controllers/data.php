@@ -149,7 +149,7 @@ class data extends REST_Controller
 
         $data = $this->rumahpompa_model->getbyId($idrumahpompa);
         //========Mendapatkan Cuaca===========
-        $url = 'http://api.wunderground.com/api/886290a3665e0779/hourly/q/';
+        $url = 'http://api.wunderground.com/api/886290a3665e0779/hourly/lang:ID/q/';
         //$service_url = $url . $sensor_latitude . ',' . $sensor_longitude . '.json';
         $service_url = $url . $data->latitude . ',' . $data->longitude . '.json';
 
@@ -185,7 +185,12 @@ class data extends REST_Controller
                 'created_at' => $currentdate,
                 'updated_at' => $currentdate,
                 'soft_delete' => 'false');
-            if($data->ketinggian_air-$tinggiair > $interval || $tinggiair-$data->ketinggian_air > $interval|| $data->cuaca != $weather || $data->chanceofrain != $pop){
+
+            if($data->ketinggian_air == $tinggiair && $data->cuaca == $weather && $data->chanceofrain == $pop){
+                $respon["status"]= true;
+                $respon["msg"]= "Data Tidak Berubah";
+            }
+            else{
                 $update = $this->data_model->store($data_sensor);
                 if($update){
                     $respon["status"]= true;
@@ -194,10 +199,6 @@ class data extends REST_Controller
                     $respon["status"]= false;
                     $respon["msg"]= "Edit Gagal";
                 }
-            }
-            else{
-                $respon["status"]= true;
-                $respon["msg"]= "Data Tidak Berubah";
             }
         }
         else{

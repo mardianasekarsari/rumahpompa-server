@@ -22,30 +22,38 @@ class Apikey extends REST_Controller
 		$algorithm = 'HS512';
 		$key = base64_decode($secret_key);
 
-		/*$keypost = $this->post('key');
-		$server = $this->post('domain');*/
 		$user = $this->post('username');
 		$password = $this->post('password');
 		$userpasspost = $this->post('key');
 		$userpass = $user.$password;
 
-		$username = $this->user_model->getbyUsername($user);
-		if ($username!=null && $username->username==$user && $username->password==md5($password) && $userpasspost==$userpass) {
-			$date = new DateTime();
-			$token = array(
-			    "iss" => $server,
-			    'iat' => $date->getTimestamp(),
-            	/*'exp' = $date->getTimestamp() + 60*60*5;*/
-			    'data' => [ 
-		            'userName' => $user
-		        ]
-			);
-			$output['result']['status'] = 'valid';
-			$output['result']['token'] = JWT::encode($token, $key, $algorithm);
+		if ($user!="" && $password!= "" && $userpasspost!="") {
+
+			$username = $this->user_model->getbyUsername($user);
+		//print_r($user);
+
+			if ($username!=null && $username->username==$user && $username->password==md5($password) && $userpasspost==$userpass) {
+				$date = new DateTime();
+				$token = array(
+				    "iss" => $server,
+				    'iat' => $date->getTimestamp(),
+	            	//'exp' = $date->getTimestamp() + 60*60*5
+				    'data' => [ 
+			            'userName' => $user
+			        ]
+				);
+				$output['result']['status'] = 'valid';
+				$output['result']['token'] = JWT::encode($token, $key, $algorithm);
+			}
+			else{
+				$output['result']['status'] = 'invalid';
+				$output['result']['msg'] = 'Token Invalid';
+			}
 		}
 		else{
-			$output['result']['status'] = 'invalid';
+			$output['result']['status'] = 'invalid';;
 		}
+
 
 		$this->response($output, 200);
 

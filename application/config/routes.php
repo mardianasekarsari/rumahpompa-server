@@ -61,7 +61,8 @@ $route['user/(:any)']['GET'] = 'user/getbyUsername/$1';
 $route['user']['POST'] = 'user/user';
 $route['user']['PUT'] = 'user/user';
 $route['user/(:any)']['DELETE'] = 'user/user/$1';
-$route['user/(:any)/token']['DELETE'] = 'user/deleteToken';
+//$route['token/(:any)']['GET'] = 'user/deleteToken/$1';
+$route['user/(:any)/token']['DELETE'] = 'user/deleteToken/$1';
 $route['user/(:any)/token']['PUT'] = 'user/editToken';
 $route['user/(:any)/password']['PUT'] = 'user/changePassword';
 

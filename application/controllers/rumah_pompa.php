@@ -1,7 +1,10 @@
 <?php
 
 require APPPATH.'/libraries/REST_Controller.php';
-
+require APPPATH.'/libraries/JWT.php';
+use \Firebase\JWT\SignatureInvalidException;
+require APPPATH.'/libraries/SignatureInvalidException.php';
+use \Firebase\JWT\JWT;
 /**
  * Created by PhpStorm.
  * User: Mardiana
@@ -24,8 +27,39 @@ class Rumah_pompa extends REST_Controller
         $this->response($this->data, 200);*/
     }
 
+    function validateToken($apikey){
+        $algorithm = 'HS512';
+        $secretKey = base64_decode($this->config->item('jwt_key')); 
+
+        $res = array(false, '');
+        // using a try and catch to verify
+        try {
+            $token = JWT::decode($apikey, $secretKey, array($algorithm));
+            $res['0'] = true;
+            $res['1'] = (array) $token;
+        } catch (Exception $e) {
+            $res['0'] = false;
+            $res['1'] = '';
+        }
+    
+        return $res;
+    }
+
     function rumahpompa_get(){
-        $rumah_pompa["result"] = $this->rumahpompa_model->getAll();
+        $headers=array();
+        foreach (getallheaders() as $name => $value) {
+            $headers[$name] = $value;
+        }
+
+        $tokenVal = $this->validateToken($headers["Api-key"]);
+        if ($tokenVal['0']) {
+            $rumah_pompa["status"] = true;
+            $rumah_pompa["result"] = $this->rumahpompa_model->getAll();
+            
+        }else{
+            $rumah_pompa["status"] = false;
+            $rumah_pompa["result"] = "Token Tidak Valid";
+        }
         $this->response($rumah_pompa, 200);
     }
 
@@ -229,6 +263,7 @@ class Rumah_pompa extends REST_Controller
     }
 
     function getUserRumahpompa_get(){
+        $object = new stdClass();
         $result = $this->user_rumahpompa_model->getAll();
         $i = 0;
         foreach ($result as $key) {
@@ -239,7 +274,8 @@ class Rumah_pompa extends REST_Controller
             $i++;
             
         }
-       $this->response($rumah_pompa, 200);
+        $object->result = $rumah_pompa;
+       $this->response($object, 200);
     }
 
     
